@@ -26,11 +26,12 @@ v5 = []
 v6 = []  # 判断小指形态
 v7 = []
 v8 = []  # 判断食指形态
-t = 'sss'
+t = 'no action'
 z = '左键点击：伸出中指，并弯曲无名指和小指\n右键点击：伸直中指、无名指和小指\n双击左键：伸直中指、无名指，并弯曲小指\nCtrl+a：伸直食指和小指\nCtrl+c：伸直小指并弯曲食指\nCtrl+v：伸直中指和小指，弯曲无名指'
 while True:
     ret, img = cap.read()
     if ret:  # 摄像头是否开启正确
+        print(z)
         img = cv2.flip(img, 1)
         imgHeight = img.shape[0]  # 获取视窗高度
         imgWidth = img.shape[1]  # 获取视窗宽度
@@ -73,13 +74,6 @@ while True:
                         # print(v5,v6)
                     if j == 8:  # 使用食指指尖作为控制鼠标移动的参数
                         move.append([lm.x, lm.y])
-                    xpos = int(lm.x * imgWidth)
-                    ypos = int(lm.y * imgHeight)
-                    # print(j, lm.z)
-        # print(v5,v6)
-        # if t=='click':
-        #     t=='op'
-
         l_0_10 = 0
         l_0_12 = 0
         l_0_14 = 0
@@ -101,7 +95,7 @@ while True:
         if len(v5) == len(v6) == 2:
             l_0_18 = (v5[0][0] - v5[1][0]) ** 2 + (v5[0][1] - v5[1][1]) ** 2
             l_0_20 = (v6[0][0] - v6[1][0]) ** 2 + (v6[0][1] - v6[1][1]) ** 2
-            print(v5, v6)
+            # print(v5, v6)
             v5.clear()
             v6.clear()
         if len(v7) == len(v8) == 2:
@@ -152,14 +146,13 @@ while True:
         elif l_0_12 <= l_0_10 and l_0_16 <= l_0_14 and l_0_20 <= l_0_18:  # 中指，无名指、小指弯曲
             t = 'no action'
 
-        if len(move) == 2:  # 对比两帧
+        if len(move) == 2:  # 两帧进行一次移动
             x = move[0][0]
             y = move[0][1]
             move.clear()
             patg.moveTo(1.5 * x * screenWidth, 1.5 * y * screenHeight, 0.0001)  # 使用绝对坐标进行移动，可以有效实现降噪，提高稳定性，减小抖动影响
 
         cv2.putText(img, t, (30, 50), cv2.FONT_HERSHEY_COMPLEX, 1, color=(0, 0, 255), thickness=3)
-        # cv2.putText(img, z, (-30, 50), cv2.FONT_HERSHEY_COMPLEX, 1, color=(0, 0, 255), thickness=3)
         img = cv2.resize(img, size1)  # 将窗口缩小为
         cv2.imshow('img', img)  # 将这一帧处理好的图片放到指定窗口
 
