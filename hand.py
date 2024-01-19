@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import pyautogui
 import pyautogui as patg
+import keyboard
 
 patg.FAILSAFE = False
 cap = cv2.VideoCapture(0)  # 调用摄像头
@@ -26,8 +27,9 @@ v7 = []
 v8 = []  # 判断食指形态
 t = 'no action'
 z = ('左键点击：伸出中指，并弯曲无名指和小指\n右键点击：伸直中指、无名指和小指\n双击左键：伸直中指、无名指，并弯曲小指\nCtrl+a：伸直食指和小指\n'
-     'Ctrl+c：伸直小指并弯曲食指\nCtrl+v：伸直中指和小指，弯曲无名指')
+     'Ctrl+c：伸直小指并弯曲食指\nCtrl+v：伸直中指和小指，弯曲无名指\n按 Q 键退出')
 print(z)
+
 while True:
     ret, img = cap.read()
     if ret:  # 摄像头是否开启正确
@@ -154,3 +156,5 @@ while True:
         img = cv2.resize(img, size1)  # 将窗口缩小为
         cv2.imshow('img', img)  # 将这一帧处理好的图片放到指定窗口
         cv2.waitKey(1)
+        if keyboard.is_pressed('q'):
+            break
