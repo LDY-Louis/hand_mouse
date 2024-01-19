@@ -10,8 +10,6 @@ hands_solution = mphands.Hands(max_num_hands=1)  # 限制检测手的数量
 Draw = mp.solutions.drawing_utils
 handstyle = Draw.DrawingSpec(color=(0, 0, 255), thickness=3)  # 指定的特征点的样式
 linestyle = Draw.DrawingSpec(color=(0, 255, 0), thickness=5)  # 指定连接线的样式
-pmR = patg.moveRel
-# patg.moveRel(100, 100, 0.1)
 screenWidth, screenHeight = patg.size()  # 获取屏幕分辨率
 size = (screenWidth, screenHeight)  # 得到屏幕分辨率元组
 move = []
@@ -27,11 +25,13 @@ v6 = []  # 判断小指形态
 v7 = []
 v8 = []  # 判断食指形态
 t = 'no action'
-z = '左键点击：伸出中指，并弯曲无名指和小指\n右键点击：伸直中指、无名指和小指\n双击左键：伸直中指、无名指，并弯曲小指\nCtrl+a：伸直食指和小指\nCtrl+c：伸直小指并弯曲食指\nCtrl+v：伸直中指和小指，弯曲无名指'
+z = ('左键点击：伸出中指，并弯曲无名指和小指\n右键点击：伸直中指、无名指和小指\n双击左键：伸直中指、无名指，并弯曲小指\nCtrl+a：伸直食指和小指\n'
+     'Ctrl+c：伸直小指并弯曲食指\nCtrl+v：伸直中指和小指，弯曲无名指')
+print(z)
 while True:
     ret, img = cap.read()
     if ret:  # 摄像头是否开启正确
-        print(z)
+
         img = cv2.flip(img, 1)
         imgHeight = img.shape[0]  # 获取视窗高度
         imgWidth = img.shape[1]  # 获取视窗宽度
@@ -43,7 +43,6 @@ while True:
         if result.multi_hand_landmarks:  # 手部特征点是否存在
             for i in result.multi_hand_landmarks:
                 Draw.draw_landmarks(img, i, mphands.HAND_CONNECTIONS, handstyle, linestyle)  # 在画面中标出特征点并连接
-                # print(type(result.multi_hand_landmarks))
                 for j, lm in enumerate(i.landmark):  # 打印21个特征点的坐标
                     if j == 0:
                         v1.append([lm.x, lm.y])
@@ -68,12 +67,11 @@ while True:
                         v4.append([lm.x, lm.y])
                     elif j == 18:
                         v5.append([lm.x, lm.y])
-                        # print(v5)
                     elif j == 20:
                         v6.append([lm.x, lm.y])
-                        # print(v5,v6)
                     if j == 8:  # 使用食指指尖作为控制鼠标移动的参数
                         move.append([lm.x, lm.y])
+
         l_0_10 = 0
         l_0_12 = 0
         l_0_14 = 0
@@ -95,7 +93,6 @@ while True:
         if len(v5) == len(v6) == 2:
             l_0_18 = (v5[0][0] - v5[1][0]) ** 2 + (v5[0][1] - v5[1][1]) ** 2
             l_0_20 = (v6[0][0] - v6[1][0]) ** 2 + (v6[0][1] - v6[1][1]) ** 2
-            # print(v5, v6)
             v5.clear()
             v6.clear()
         if len(v7) == len(v8) == 2:
@@ -103,12 +100,13 @@ while True:
             l_0_8 = (v8[0][0] - v8[1][0]) ** 2 + (v8[0][1] - v8[1][1]) ** 2
             v7.clear()
             v8.clear()
+
+
         if l_0_12 == l_0_10 and l_0_16 == l_0_14 and l_0_20 == l_0_18:
             t = 'no action'
         elif l_0_12 >= l_0_10 and l_0_16 >= l_0_14 and l_0_20 >= l_0_18:  # 中指、无名指和小指全部伸直，单击右键
             if t != 'click right':
                 t = 'click right'
-                # t='3'
                 c_x, c_y = pyautogui.position()
                 pyautogui.click(c_x, c_y, button='right')
         elif l_0_12 >= l_0_10 and l_0_16 >= l_0_14 and l_0_20 <= l_0_18:  # 中指、无名指全部伸直，小指弯曲，双击左键
@@ -155,6 +153,4 @@ while True:
         cv2.putText(img, t, (30, 50), cv2.FONT_HERSHEY_COMPLEX, 1, color=(0, 0, 255), thickness=3)
         img = cv2.resize(img, size1)  # 将窗口缩小为
         cv2.imshow('img', img)  # 将这一帧处理好的图片放到指定窗口
-
-        if cv2.waitKey(1) == ord('q'):  # 加载1ms
-            break
+        cv2.waitKey(1)
